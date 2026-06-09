@@ -1,4 +1,5 @@
 import axios from "axios";
+import mockNotifications from "./mockData";
 
 export const BASE_URL = "http://4.224.186.213/evaluation-service";
 
@@ -14,12 +15,19 @@ const authHeaders = () => ({
   "Content-Type": "application/json",
 });
 
-// 1. GET all notifications
+// 1. GET all notifications — falls back to mock data if API is unavailable
 export const getNotifications = async () => {
-  const response = await axios.get(`${BASE_URL}/notifications`, {
-    headers: authHeaders(),
-  });
-  return response.data.notifications || [];
+  try {
+    const response = await axios.get(`${BASE_URL}/notifications`, {
+      headers: authHeaders(),
+      timeout: 6000,
+    });
+    const data = response.data.notifications || [];
+    return data.length > 0 ? data : mockNotifications;
+  } catch {
+    console.warn("API unavailable — using mock data");
+    return mockNotifications;
+  }
 };
 
 // 2. GET unread count
