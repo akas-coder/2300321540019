@@ -5,14 +5,11 @@ import {
   Chip,
   Box,
 } from "@mui/material";
-import PlaceIcon from "@mui/icons-material/Place";
-import SchoolIcon from "@mui/icons-material/School";
-import EventIcon from "@mui/icons-material/Event";
 
 const typeConfig = {
-  Placement: { color: "primary", icon: <PlaceIcon fontSize="small" /> },
-  Result: { color: "success", icon: <SchoolIcon fontSize="small" /> },
-  Event: { color: "warning", icon: <EventIcon fontSize="small" /> },
+  Placement: { color: "#a78bfa", bg: "rgba(167,139,250,0.12)", label: "📌 Placement" },
+  Result:    { color: "#34d399", bg: "rgba(52,211,153,0.12)",  label: "🎓 Result" },
+  Event:     { color: "#fbbf24", bg: "rgba(251,191,36,0.12)",  label: "🗓️ Event" },
 };
 
 function NotificationCard({ notification, onView }) {
@@ -24,7 +21,9 @@ function NotificationCard({ notification, onView }) {
     if (onView) onView(notification.ID);
   };
 
-  const config = typeConfig[notification.Type] || { color: "default", icon: null };
+  const cfg = typeConfig[notification.Type] || {
+    color: "#94a3b8", bg: "rgba(148,163,184,0.08)", label: notification.Type,
+  };
 
   return (
     <Card
@@ -32,13 +31,21 @@ function NotificationCard({ notification, onView }) {
       sx={{
         mb: 2,
         cursor: "pointer",
+        background: viewed
+          ? "rgba(255,255,255,0.03)"
+          : cfg.bg,
+        border: "1px solid",
+        borderColor: viewed
+          ? "rgba(255,255,255,0.07)"
+          : `${cfg.color}55`,
         borderLeft: "4px solid",
-        borderColor: viewed ? "grey.400" : "primary.main",
-        backgroundColor: viewed ? "#f9f9f9" : "#fff",
-        transition: "all 0.2s ease",
+        borderLeftColor: viewed ? "rgba(255,255,255,0.15)" : cfg.color,
+        backdropFilter: "blur(14px)",
+        transition: "all 0.25s ease",
         "&:hover": {
-          transform: "translateY(-2px)",
-          boxShadow: 4,
+          transform: "translateY(-3px)",
+          boxShadow: `0 8px 32px ${cfg.color}22`,
+          borderColor: cfg.color,
         },
       }}
     >
@@ -49,28 +56,48 @@ function NotificationCard({ notification, onView }) {
             justifyContent: "space-between",
             alignItems: "center",
             mb: 1,
+            flexWrap: "wrap",
+            gap: 1,
           }}
         >
           <Chip
-            icon={config.icon}
-            label={notification.Type}
-            color={config.color}
+            label={cfg.label}
             size="small"
-            variant={viewed ? "outlined" : "filled"}
+            sx={{
+              bgcolor: viewed ? "rgba(255,255,255,0.06)" : `${cfg.color}22`,
+              color: viewed ? "text.secondary" : cfg.color,
+              fontWeight: 600,
+              border: `1px solid ${cfg.color}44`,
+              fontSize: 12,
+            }}
           />
           {!viewed && (
-            <Chip label="New" color="error" size="small" sx={{ ml: 1 }} />
+            <Chip
+              label="NEW"
+              size="small"
+              sx={{
+                bgcolor: "rgba(248,113,113,0.15)",
+                color: "#f87171",
+                fontWeight: 700,
+                fontSize: 10,
+                border: "1px solid rgba(248,113,113,0.3)",
+              }}
+            />
           )}
         </Box>
 
         <Typography
           variant="body1"
-          sx={{ color: viewed ? "text.secondary" : "text.primary", mb: 0.5 }}
+          sx={{
+            color: viewed ? "text.secondary" : "text.primary",
+            mb: 0.5,
+            lineHeight: 1.5,
+          }}
         >
           {notification.Message}
         </Typography>
 
-        <Typography variant="caption" color="text.secondary">
+        <Typography variant="caption" sx={{ color: cfg.color, opacity: 0.7 }}>
           {notification.Timestamp
             ? new Date(notification.Timestamp).toLocaleString()
             : "—"}
