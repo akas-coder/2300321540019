@@ -1,37 +1,123 @@
-# Notification System Design
+# Stage 1 - API Design
 
 ## Overview
 
-This document describes the architecture and design of the notification system.
+The Campus Notification Platform allows students to receive notifications related to placements, results, and events.
 
-## Components
+---
 
-- **notification_app_be** — Backend service responsible for processing and dispatching notifications.
-- **notification_app_fe** — Frontend application for managing notification preferences and displaying alerts.
-- **logging_middleware** — Middleware layer for logging all notification events and system activity.
+## 1. Get Notifications
 
-## Architecture
+### Endpoint
 
+GET /api/notifications
+
+### Purpose
+
+Fetch all notifications for a student.
+
+### Response
+
+```json
+{
+  "notifications": [
+    {
+      "id": 1,
+      "type": "Placement",
+      "message": "TCS placement drive announced",
+      "isRead": false,
+      "createdAt": "2026-06-09T10:00:00Z"
+    }
+  ]
+}
 ```
-[Client / FE] ──► [logging_middleware] ──► [notification_app_be] ──► [Notification Channels]
+
+---
+
+## 2. Mark Notification as Read
+
+### Endpoint
+
+PATCH /api/notifications/{id}/read
+
+### Purpose
+
+Mark a notification as read.
+
+### Response
+
+```json
+{
+  "message": "Notification marked as read"
+}
 ```
 
-## Notification Channels
+---
 
-- Email
-- SMS
-- Push Notifications
-- In-App Alerts
+## 3. Get Unread Count
 
-## Tech Stack
+### Endpoint
 
-| Layer      | Technology |
-|------------|------------|
-| Frontend   | React / Next.js |
-| Backend    | Node.js / Express |
-| Middleware | Custom logging layer |
-| Database   | PostgreSQL / Redis |
+GET /api/notifications/unread-count
 
-## Notes
+### Purpose
 
-> Add detailed design decisions, API contracts, and data flow diagrams here.
+Get total unread notifications.
+
+### Response
+
+```json
+{
+  "count": 5
+}
+```
+
+---
+
+## 4. Create Notification
+
+### Endpoint
+
+POST /api/notifications
+
+### Request
+
+```json
+{
+  "type": "Placement",
+  "message": "Infosys hiring drive announced"
+}
+```
+
+### Response
+
+```json
+{
+  "message": "Notification created successfully"
+}
+```
+
+---
+
+## Real-Time Notification Design
+
+### Technology
+
+WebSocket
+
+### Flow
+
+Admin
+↓
+Backend Server
+↓
+WebSocket Server
+↓
+Connected Students
+
+### Working
+
+1. Admin creates notification.
+2. Backend stores notification.
+3. WebSocket pushes notification instantly.
+4. Students receive notification without refreshing the page.
