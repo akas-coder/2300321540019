@@ -9,9 +9,11 @@ import {
 } from "@mui/material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import ApiIcon from "@mui/icons-material/Api";
 
 import AllNotifications from "./pages/AllNotifications";
 import PriorityNotifications from "./pages/PriorityNotifications";
+import ApiTester from "./pages/ApiTester";
 
 const navLinkStyle = ({ isActive }) => ({
   textDecoration: "none",
@@ -26,14 +28,17 @@ function App() {
   return (
     <BrowserRouter>
       {/* Top Nav */}
-      <AppBar position="sticky" sx={{ background: "linear-gradient(90deg, #1565c0, #0288d1)" }}>
-        <Toolbar sx={{ gap: 2, flexWrap: "wrap" }}>
+      <AppBar
+        position="sticky"
+        sx={{ background: "linear-gradient(90deg, #1565c0, #0288d1)" }}
+      >
+        <Toolbar sx={{ gap: 1, flexWrap: "wrap" }}>
           <NotificationsIcon />
           <Typography variant="h6" fontWeight={700} sx={{ flexGrow: 1 }}>
             Campus Notification Platform
           </Typography>
 
-          <Box sx={{ display: "flex", gap: 2 }}>
+          <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
             <NavLink to="/" style={navLinkStyle} end>
               <Button
                 startIcon={<NotificationsIcon />}
@@ -51,6 +56,15 @@ function App() {
                 Priority
               </Button>
             </NavLink>
+
+            <NavLink to="/api-tester" style={navLinkStyle}>
+              <Button
+                startIcon={<ApiIcon />}
+                sx={{ color: "inherit", textTransform: "none" }}
+              >
+                API Tester
+              </Button>
+            </NavLink>
           </Box>
         </Toolbar>
       </AppBar>
@@ -60,6 +74,7 @@ function App() {
         <Routes>
           <Route path="/" element={<AllNotifications />} />
           <Route path="/priority" element={<PriorityNotifications />} />
+          <Route path="/api-tester" element={<ApiTester />} />
         </Routes>
       </Container>
     </BrowserRouter>
